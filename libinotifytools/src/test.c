@@ -211,12 +211,19 @@ void tst_inotifytools_snprintf() {
 
     char buf[BUFSZ];
     char event_buf[4096];
+    char cookie[12];
     struct inotify_event *test_event = (struct inotify_event *)event_buf;
 
     RESET;
     test_event->mask = IN_ACCESS;
     inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T");
     verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/  "), buf);
+
+    RESET;
+    sprintf(cookie, "%d", test_event->cookie);
+    test_event->mask = IN_ACCESS;
+    inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T %c");
+    verify2(!strcmp(buf, strcat("Event ACCESS ACCESS on " TEST_DIR "/   ", cookie)), buf);
 
     RESET;
     test_event->mask = IN_ACCESS | IN_DELETE;
