@@ -211,20 +211,23 @@ void tst_inotifytools_snprintf() {
 
     char buf[BUFSZ];
     char event_buf[4096];
+    char cookie[4096];
     struct inotify_event *test_event = (struct inotify_event *)event_buf;
+
+    sprintf(cookie, "%d", test_event->cookie)
 
     RESET;
     test_event->mask = IN_ACCESS;
     inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T %c");
-    verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/   " test_event->cookie), buf);
+    verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/   " cookie), buf);
 
     RESET;
     test_event->mask = IN_ACCESS | IN_DELETE;
     inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T %c");
     verify2(
-        !strcmp(buf, "Event ACCESS,DELETE ACCESS.DELETE on " TEST_DIR "/   " test_event->cookie) ||
+        !strcmp(buf, "Event ACCESS,DELETE ACCESS.DELETE on " TEST_DIR "/   " cookie) ||
             !strcmp(buf,
-                    "Event DELETE,ACCESS DELETE.ACCESS on " TEST_DIR "/   " test_event->cookie),
+                    "Event DELETE,ACCESS DELETE.ACCESS on " TEST_DIR "/   " cookie),
         buf);
 
     RESET;
@@ -237,7 +240,7 @@ void tst_inotifytools_snprintf() {
     strcpy(test_event->name, "my_great_file");
     test_event->len = strlen(test_event->name) + 1;
     inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T %c");
-    verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/ my_great_file  " test_event->cookie),
+    verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/ my_great_file  " cookie),
             buf);
 
     RESET;
@@ -249,7 +252,7 @@ void tst_inotifytools_snprintf() {
         time_t now = time(0);
         strftime(timestr, 512, "%D%% %H:%M", localtime(&now));
         snprintf(expected, 1024, "Event ACCESS ACCESS on %s/  %s %s", TEST_DIR,
-                 timestr, test_event->cookie);
+                 timestr, cookie);
         inotifytools_snprintf(buf, 1024, test_event,
                               "Event %e %.e on %w %f %T %c");
         verify2(!strcmp(buf, expected), buf);
