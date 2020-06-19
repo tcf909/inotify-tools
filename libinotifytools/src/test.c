@@ -215,8 +215,8 @@ void tst_inotifytools_snprintf() {
 
     RESET;
     test_event->mask = IN_ACCESS;
-    inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T");
-    verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/  "), buf);
+    inotifytools_snprintf(buf, 1024, test_event, "Event %e %.e on %w %f %T %c");
+    verify2(!strcmp(buf, "Event ACCESS ACCESS on " TEST_DIR "/   " test_event->cookie), buf);
 
     RESET;
     test_event->mask = IN_ACCESS | IN_DELETE;

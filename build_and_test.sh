@@ -47,7 +47,7 @@ if [ "$os" != "FreeBSD" ]; then
   cd -
 fi
 
-printf "\nintegration test\n"
-cd t
-make -j$j
+#printf "\nintegration test\n"
+#cd t
+#make -j$j
 
